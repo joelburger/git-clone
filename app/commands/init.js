@@ -1,13 +1,14 @@
 const fs = require('fs');
 const path = require('path');
+const { gitFolders } = require('../helpers/common');
 
 module.exports = {
-    execute(args) {
-        fs.mkdirSync(path.join(process.cwd(), '.git'), {recursive: true});
-        fs.mkdirSync(path.join(process.cwd(), '.git', 'objects'), {recursive: true});
-        fs.mkdirSync(path.join(process.cwd(), '.git', 'refs'), {recursive: true});
-        fs.writeFileSync(path.join(process.cwd(), '.git', 'HEAD'), 'ref: refs/heads/main\n');
+  execute(args) {
+    fs.mkdirSync(gitFolders.root, { recursive: true });
+    fs.mkdirSync(gitFolders.objects, { recursive: true });
+    fs.mkdirSync(gitFolders.refs, { recursive: true });
+    fs.writeFileSync(path.join(gitFolders.root, 'HEAD'), 'ref: refs/heads/main\n');
 
-        console.log('Initialised git directory');
-    }
-}
+    console.log('Initialised git directory');
+  },
+};
