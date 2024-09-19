@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { gitFolders } = require('../helpers/common');
+const { gitFolders } = require('../util');
 
 module.exports = {
   execute(args) {
