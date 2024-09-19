@@ -68,8 +68,9 @@ function readFile(hashCode) {
 function fetchBlob(hashCode) {
   const data = readFile(hashCode);
   const buffer = zlib.inflateSync(data);
-  const header = buffer.subarray(0, buffer.indexOf('\0') + 1).toString('utf8');
-  const content = buffer.subarray(header.length).toString('utf8');
+  const headerEnd = buffer.indexOf('\0') + 1;
+  const header = buffer.subarray(0, headerEnd).toString('utf8');
+  const content = buffer.subarray(headerEnd).toString('utf8');
 
   return {
     header,
@@ -87,16 +88,15 @@ function fetchBlob(hashCode) {
 function fetchTree(hashCode) {
   const data = readFile(hashCode);
   const buffer = zlib.inflateSync(data);
-  const header = buffer.subarray(0, buffer.indexOf('\0') + 1);
+  const headerEnd = buffer.indexOf('\0') + 1;
   const folders = [];
-  let cursor = header.length;
+  let cursor = headerEnd;
 
   while (cursor < buffer.length) {
-    const metadata = buffer.subarray(cursor, buffer.indexOf('\0', cursor));
-    const [mode, name] = metadata.toString('utf8').split(' ');
-    folders.push({mode, name});
-    cursor += metadata.length + 1;
-    cursor += 20; // skip hashcode
+    const metadataEnd = buffer.indexOf('\0', cursor);
+    const [mode, name] = buffer.subarray(cursor, metadataEnd).toString('utf8').split(' ');
+    folders.push({ mode, name });
+    cursor = metadataEnd + 1 + 20; // skip metadata and hashcode
   }
 
   return folders;
