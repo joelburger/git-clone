@@ -1,9 +1,5 @@
 const fs = require('fs');
-const path = require('path');
-const zlib = require('zlib');
-const { createHash } = require('crypto');
-const { parseHashCode, gitFolders, generateHashCode, saveObject } = require('../helpers/common');
-
+const { saveObject } = require('../helpers/common');
 
 module.exports = {
   execute(args) {
@@ -15,7 +11,7 @@ module.exports = {
 
     const data = fs.readFileSync(objectPath);
 
-    const hashCode = saveObject(data);
+    const hashCode = saveObject(data.toString('utf8'));
 
     process.stdout.write(hashCode);
   },

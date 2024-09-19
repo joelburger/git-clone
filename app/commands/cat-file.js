@@ -1,7 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const zlib = require('zlib');
-const { parseHashCode, gitFolders, fetchObject, fetchBlob } = require('../helpers/common');
+const { fetchBlob } = require('../helpers/common');
 
 module.exports = {
   execute(args) {

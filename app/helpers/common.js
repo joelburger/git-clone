@@ -55,7 +55,7 @@ function readFile(hashCode) {
     throw new Error(`Object file not found: ${objectPath}`);
   }
 
-  return fs.readFileSync(path.join(gitFolders.objects, folder, objectName));
+  return fs.readFileSync(objectPath);
 }
 
 /**
@@ -77,14 +77,18 @@ function fetchBlob(hashCode) {
   };
 }
 
+/**
+ * Fetches a tree object by its hash code.
+ *
+ * @param {string} hashCode - The 40-character hash code of the tree object to fetch.
+ * @returns {Array} An array of objects, each containing the mode and name of a folder.
+ * @throws {Error} If the object file is not found or the hash code is invalid.
+ */
 function fetchTree(hashCode) {
   const data = readFile(hashCode);
   const buffer = zlib.inflateSync(data);
-
   const header = buffer.subarray(0, buffer.indexOf('\0') + 1);
-
   const folders = [];
-
   let cursor = header.length;
 
   while (cursor < buffer.length) {
