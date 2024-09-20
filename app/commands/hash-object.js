@@ -10,7 +10,6 @@ module.exports = {
     const hashCode = generateHashCode(objectData, 'hex');
     const { folder, objectName } = parseHashCode(hashCode);
     const objectFilePath = join(gitFolders.objects, folder);
-
     fs.mkdirSync(objectFilePath, { recursive: true });
 
     const compressedData = deflateSync(objectData);
