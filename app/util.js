@@ -1,6 +1,8 @@
 const path = require('path');
 const { createHash } = require('crypto');
 const fs = require('fs');
+const { join } = require('node:path');
+const { deflateSync } = require('node:zlib');
 
 /**
  * An object containing paths to various git-related folders.
@@ -58,9 +60,23 @@ function readFile(hashCode) {
   return fs.readFileSync(objectPath);
 }
 
+function saveFile(data) {
+  const hashCode = generateHashCode(data, 'hex');
+  const { folder, objectName } = parseHashCode(hashCode);
+  const objectFilePath = join(gitFolders.objects, folder);
+  fs.mkdirSync(objectFilePath, { recursive: true });
+
+  const compressedData = deflateSync(data);
+
+  fs.writeFileSync(join(objectFilePath, objectName), compressedData);
+
+  return hashCode;
+}
+
 module.exports = {
   generateHashCode,
   gitFolders,
   parseHashCode,
   readFile,
+  saveFile,
 };

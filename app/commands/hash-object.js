@@ -1,22 +1,12 @@
 const fs = require('fs');
-const { deflateSync } = require('node:zlib');
-const { join } = require('node:path');
-const { gitFolders, parseHashCode, generateHashCode } = require('../util');
+const { saveFile } = require('../util');
 
 
 module.exports = {
   saveBlob(content) {
-    const objectData = `blob ${content.length}\0${content}`;
-    const hashCode = generateHashCode(objectData, 'hex');
-    const { folder, objectName } = parseHashCode(hashCode);
-    const objectFilePath = join(gitFolders.objects, folder);
-    fs.mkdirSync(objectFilePath, { recursive: true });
+    const data = `blob ${content.length}\0${content}`;
 
-    const compressedData = deflateSync(objectData);
-
-    fs.writeFileSync(join(objectFilePath, objectName), compressedData);
-
-    return hashCode;
+    return saveFile(data);
   },
 
   execute(args) {

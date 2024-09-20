@@ -1,22 +1,8 @@
 const path = require('path');
-const { gitFolders, generateHashCode, parseHashCode } = require('../util');
+const { saveFile } = require('../util');
 const { statSync, readdirSync } = require('node:fs');
 const { saveBlob } = require('./hash-object');
 const fs = require('fs');
-const { join } = require('node:path');
-const { deflateSync } = require('node:zlib');
-
-function saveTree(data) {
-  const hashCode = generateHashCode(data, 'hex');
-  const { folder, objectName } = parseHashCode(hashCode);
-  const objectFilePath = join(gitFolders.objects, folder);
-  fs.mkdirSync(objectFilePath, { recursive: true });
-
-  const compressedData = deflateSync(data);
-  fs.writeFileSync(join(objectFilePath, objectName), compressedData);
-
-  return hashCode;
-}
 
 function constructTreeContents(treeData) {
   let buffer = Buffer.alloc(0);
@@ -57,7 +43,7 @@ function writeTree(directory) {
     }
   });
 
-  return saveTree(constructTreeContents(treeData));
+  return saveFile(constructTreeContents(treeData));
 }
 
 module.exports = {
