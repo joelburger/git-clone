@@ -74,9 +74,7 @@ function saveFile(data) {
 }
 
 module.exports = {
-  generateHashCode,
   gitFolders,
-  parseHashCode,
   readFile,
   saveFile,
 };
